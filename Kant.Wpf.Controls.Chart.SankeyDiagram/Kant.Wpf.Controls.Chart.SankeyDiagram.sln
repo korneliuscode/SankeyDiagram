@@ -1,11 +1,13 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kant.Wpf.Controls.Chart.SankeyDiagram", "Kant.Wpf.Controls.Chart.SankeyDiagram\Kant.Wpf.Controls.Chart.SankeyDiagram.csproj", "{509ABF39-F278-4932-BD42-75C51C41C035}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kant.Wpf.Controls.Chart.SankeyDiagram", "Kant.Wpf.Controls.Chart.SankeyDiagram\Kant.Wpf.Controls.Chart.SankeyDiagram.csproj", "{509ABF39-F278-4932-BD42-75C51C41C035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kant.Wpf.Controls.Chart.Example", "Kant.Wpf.Controls.Chart.Example\Kant.Wpf.Controls.Chart.Example.csproj", "{A69B1553-8F6E-47AA-9FA8-FAB6FE5808E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kant.Wpf.Controls.Chart.Example", "Kant.Wpf.Controls.Chart.Example\Kant.Wpf.Controls.Chart.Example.csproj", "{A69B1553-8F6E-47AA-9FA8-FAB6FE5808E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{509ABF39-F278-4932-BD42-75C51C41C035} = {509ABF39-F278-4932-BD42-75C51C41C035}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DEF0ABF-480F-47E5-9114-14A5A2582457}
 	EndGlobalSection
 EndGlobal

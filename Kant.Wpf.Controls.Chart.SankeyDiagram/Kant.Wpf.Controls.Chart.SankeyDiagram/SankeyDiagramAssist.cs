@@ -1,4 +1,5 @@
-﻿using Kant.Wpf.Toolkit;
+﻿//using Kant.Wpf.Toolkit;
+using Kant.Wpf.Controls.Helper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
