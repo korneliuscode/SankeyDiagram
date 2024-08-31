@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace kor.Wpf.Controls.Chart
 {
-    public class SankeyStyleManager
+	public class SankeyStyleManager
     {
         #region Constructor
 
@@ -181,11 +179,11 @@ namespace kor.Wpf.Controls.Chart
             {
                 foreach(var node in levelNodes)
                 {
-                    node.Shape.Fill = brush.CloneCurrentValue();
+					node.Shape.Fill = brush.CloneCurrentValue();
                 }
             }
         }
-
+       
         public void ChangeToolTipTemplate(ControlTemplate newTemplate, IReadOnlyList<SankeyLink> links)
         {
             if(links == null || newTemplate == null)
@@ -417,6 +415,33 @@ namespace kor.Wpf.Controls.Chart
         {
             return new List<Brush>()
             {
+
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5C83B4")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5587C")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6C7C65")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E67963")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5BA09A")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CF5D60")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#46886A")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5A361")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9E9958")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF8C5A")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5A82B5")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5597B")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7D63")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5AA29C")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CE5D63")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7B96AD")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#528E84")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BDCB94")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A56163")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4B8EAD")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFE784")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A6194")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C6514A")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8CB663")) { Opacity = opacity },
+new SolidColorBrush((Color)ColorConverter.ConvertFromString("#84A6D6")) { Opacity = opacity },
+
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0095fb")) { Opacity = opacity },
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ff0000")) { Opacity = opacity },
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffa200")) { Opacity = opacity },
