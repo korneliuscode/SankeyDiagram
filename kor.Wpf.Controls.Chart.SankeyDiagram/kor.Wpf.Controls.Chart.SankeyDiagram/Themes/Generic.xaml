@@ -13,7 +13,7 @@
             <Run Text=" -> " />
             <Run Text="{Binding ToNode.Name}" />
             <Run Text=": " />
-            <Run Text="{Binding Weight}" />
+            <Run Text="{Binding Weight, StringFormat={}{0:N2}}" />
         </TextBlock>
     </ControlTemplate>
     <Style TargetType="{x:Type local:SankeyDiagram}">
