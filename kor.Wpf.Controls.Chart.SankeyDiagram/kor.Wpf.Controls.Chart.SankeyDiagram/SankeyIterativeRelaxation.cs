@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace kor.Wpf.Controls.Chart
 {
-    public static class SankeyIterativeRelaxation
+	public static class SankeyIterativeRelaxation
     {
         public static Dictionary<int, List<SankeyNode>> Calculate(FlowDirection flowDirection, Dictionary<int, List<SankeyNode>> nodes, List<SankeyLink> links, double panelLength, double nodeGap, double unitLength, int iterations)
         {

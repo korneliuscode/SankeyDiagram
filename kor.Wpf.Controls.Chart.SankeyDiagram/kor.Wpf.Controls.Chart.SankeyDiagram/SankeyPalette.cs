@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace kor.Wpf.Controls.Chart
+﻿namespace kor.Wpf.Controls.Chart
 {
-    public enum SankeyPalette
+	public enum SankeyPalette
     {
         NodesLinks,
         LinksOnly,
