@@ -209,6 +209,21 @@ namespace kor.Wpf.Controls.Chart
         /// universal node brush,
         /// it will not work if UsePallette set to be NodesLinks
         /// </summary>
+        public double PaletteOpacity
+        {
+            get { return (double)GetValue(PaletteOpacityProperty); }
+            set { SetValue(PaletteOpacityProperty, value); }
+        }
+
+        public static readonly DependencyProperty PaletteOpacityProperty =
+            DependencyProperty.Register("PaletteOpacity", typeof(double), typeof(SankeyDiagram),
+                new PropertyMetadata(0.9, (o, e) =>
+                {
+                    var d = (SankeyDiagram)o;
+                    d.styleManager.SetDefaultStyles();
+                    ReLoadDiagram(d);
+                }));
+
         public Brush NodeBrush
         {
             get { return (Brush)GetValue(NodeBrushProperty); }

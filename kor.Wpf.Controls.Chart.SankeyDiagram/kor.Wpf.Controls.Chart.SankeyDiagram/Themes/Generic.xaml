@@ -6,16 +6,20 @@
         <Setter Property="Margin"
                 Value="2" />
     </Style>
-    <ControlTemplate x:Key="DefaultToolTipTemplate"
+	<ControlTemplate x:Key="DefaultToolTipTemplate"
                      TargetType="ToolTip">
-        <TextBlock HorizontalAlignment="Center">
+		<StackPanel Orientation="Vertical" Background="White">
+			<TextBlock HorizontalAlignment="Center">
             <Run Text="{Binding FromNode.Name}" />
             <Run Text=" -> " />
             <Run Text="{Binding ToNode.Name}" />
-            <Run Text=": " />
-            <Run Text="{Binding Weight, StringFormat={}{0:N2}}" />
-        </TextBlock>
-    </ControlTemplate>
+            <Run Text=":" />
+			</TextBlock>
+			<TextBlock FontWeight="SemiBold">
+		    <Run Text="{Binding Weight, StringFormat={}{0:N2}}" />
+			</TextBlock>
+		</StackPanel>
+	</ControlTemplate>
     <Style TargetType="{x:Type local:SankeyDiagram}">
         <Setter Property="LabelStyle"
                 Value="{StaticResource DefaultLabelStyle}" />
