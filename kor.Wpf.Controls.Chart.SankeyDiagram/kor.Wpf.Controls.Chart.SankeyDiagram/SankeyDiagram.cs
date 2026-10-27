@@ -108,8 +108,9 @@ namespace kor.Wpf.Controls.Chart
 
         private static void OnNodeBrushesSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
+            // rebuilding keeps links coloured from their target node whether the brushes arrive before or after the datas
             var diagram = (SankeyDiagram)o;
-            diagram.styleManager.UpdateNodeBrushes((Dictionary<string, Brush>)e.NewValue, diagram.assist.CurrentNodes, diagram.assist.CurrentLinks);
+            diagram.assist.UpdateDiagram(diagram.Datas);
         }
 
         private static void OnSankeyFlowDirectionSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
@@ -222,6 +223,24 @@ namespace kor.Wpf.Controls.Chart
                     var d = (SankeyDiagram)o;
                     d.styleManager.SetDefaultStyles();
                     ReLoadDiagram(d);
+                }));
+
+        /// <summary>
+        /// opacity of palette coloured links, they take the colour of their target node
+        /// and let the background show through, so they read on light and dark backgrounds alike
+        /// </summary>
+        public double LinkOpacity
+        {
+            get { return (double)GetValue(LinkOpacityProperty); }
+            set { SetValue(LinkOpacityProperty, value); }
+        }
+
+        public static readonly DependencyProperty LinkOpacityProperty =
+            DependencyProperty.Register("LinkOpacity", typeof(double), typeof(SankeyDiagram),
+                new PropertyMetadata(0.4, (o, e) =>
+                {
+                    var d = (SankeyDiagram)o;
+                    d.assist.UpdateDiagram(d.Datas);
                 }));
 
         public Brush NodeBrush

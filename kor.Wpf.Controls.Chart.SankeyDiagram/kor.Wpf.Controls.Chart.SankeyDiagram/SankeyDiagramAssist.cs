@@ -102,11 +102,10 @@ namespace kor.Wpf.Controls.Chart
                         shape.MouseLeave += LinkMouseLeave;
                         shape.MouseLeftButtonUp += LinkMouseLeftButtonUp;
                         shape.Tag = new SankeyLinkFinder(data.From, data.To);
-                        shape.Fill = 
+                        shape.Fill =
                             diagram.UsePallette != SankeyPalette.None ?
-								new SolidColorBrush(LightenColor((toNode.Shape.Fill as SolidColorBrush).Color, 0.7f))
-						//fromNode.Shape.Fill.CloneCurrentValue() 
-                                : 
+                                styleManager.GetLinkBrush(toNode)
+                                :
                                 data.LinkBrush == null ? styleManager.DefaultLinkBrush.CloneCurrentValue() : data.LinkBrush.CloneCurrentValue();
                         var link = new SankeyLink(fromNode, toNode, shape, data.Weight, shape.Fill.CloneCurrentValue());
                         fromNode.OutLinks.Add(link);
@@ -116,13 +115,6 @@ namespace kor.Wpf.Controls.Chart
                 }
             }
         }
-		private Color LightenColor(Color color, float correctionFactor) // correctionFactor should be between 0 and 1
-		{
-			float red = (255 - color.R) * correctionFactor + color.R;
-			float green = (255 - color.G) * correctionFactor + color.G;
-			float blue = (255 - color.B) * correctionFactor + color.B;
-			return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
-		}
 
 		private SankeyNode CreateNode(SankeyData data, string name)
         {
