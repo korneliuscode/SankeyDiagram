@@ -111,54 +111,13 @@ namespace kor.Wpf.Controls.Chart
             node.OriginalBrush = node.Shape.Fill.CloneCurrentValue();
         }
 
-        public void UpdateNodeBrushes(Dictionary<string, Brush> newBrushes, IReadOnlyDictionary<int, IReadOnlyList<SankeyNode>> nodes, IReadOnlyList<SankeyLink> links)
+        public Brush GetLinkBrush(SankeyNode toNode)
         {
-            if (diagram == null || newBrushes == null || nodes == null || nodes.Count() < 2)
-            {
-                return;
-            }
+            var nodeBrush = toNode.OriginalBrush ?? toNode.Shape.Fill;
+            var brush = nodeBrush is SolidColorBrush solid ? new SolidColorBrush(solid.Color) : nodeBrush.CloneCurrentValue();
+            brush.Opacity = diagram.LinkOpacity;
 
-            ClearHighlight();
-            var brushChangedNodes = new List<string>();
-
-            foreach (var levelNodes in nodes.Values)
-            {
-                foreach (var node in levelNodes)
-                {
-                    var key = node.Name;
-
-                    if (newBrushes.Keys.Contains(key))
-                    {
-                        brushChangedNodes.Add(key);
-                        var brush = newBrushes[node.Name];
-                        node.Shape.Fill = brush.CloneCurrentValue();
-                        node.OriginalBrush = brush.CloneCurrentValue();
-                    }
-                }
-            }
-
-            if(brushChangedNodes.Count == 0)
-            {
-                return;
-            }
-
-            if (diagram.UsePallette != SankeyPalette.None)
-            {
-                if (links == null || links.Count == 0)
-                {
-                    return;
-                }
-
-                foreach (var link in links)
-                {
-                    if (brushChangedNodes.Contains(link.FromNode.Name))
-                    {
-                        var brush = link.FromNode.Shape.Fill;
-                        link.Shape.Fill = brush.CloneCurrentValue();
-                        link.OriginalBrush = brush.CloneCurrentValue();
-                    }
-                }
-            }
+            return brush;
         }
 
         public void UpdateNodeBrushes(Brush brush, IReadOnlyDictionary<int, IReadOnlyList<SankeyNode>> nodes)
@@ -363,12 +322,12 @@ namespace kor.Wpf.Controls.Chart
                         // prevent changing node's brush again
                         if (!highlightNodes.Exists(n => n == link.FromNode.Name) && !minimizeNodes.Exists(n => n == link.FromNode.Name))
                         {
-                            MinimizeNode(link.FromNode, minimizeOpacity, minimizeNodes);
+                            MinimizeNode(link.FromNode, loweredOpacity, minimizeNodes);
                         }
 
                         if (!highlightNodes.Exists(n => n == link.ToNode.Name) && !minimizeNodes.Exists(n => n == link.ToNode.Name))
                         {
-                            MinimizeNode(link.ToNode, minimizeOpacity, minimizeNodes);
+                            MinimizeNode(link.ToNode, loweredOpacity, minimizeNodes);
                         }
                     }
                 }
@@ -403,67 +362,71 @@ namespace kor.Wpf.Controls.Chart
             }
         }
 
-        private void MinimizeNode(SankeyNode node, double minimizeOpacity, List<string> minimizeNodes)
+        // nodes and labels are lowered from their own opacity, so they stay readable while translucent links fade out
+        private void MinimizeNode(SankeyNode node, double loweredOpacity, List<string> minimizeNodes)
         {
-            node.Shape.Fill.Opacity = minimizeOpacity;
+            node.Shape.Fill.Opacity = Math.Max(0, node.OriginalBrush.Opacity - loweredOpacity);
             node.IsHighlight = false;
             minimizeNodes.Add(node.Name);
-            node.Label.Opacity = minimizeOpacity;
+            node.Label.Opacity = Math.Max(0, OriginalLabelOpacity - loweredOpacity);
         }
 
         private List<Brush> GetNodeLinksPalette(double opacity)
         {
-            return new List<Brush>()
-            {
-
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A6F9E")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8E3F66")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#556055")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B0553A")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3D8880")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B03F42")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#326E52")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B87040")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A7A38")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C06030")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A709E")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8E4065")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#556253")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3E8882")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AF4045")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#607A96")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A756C")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A9150")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8A4547")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#326E96")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A08A30")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#384F7C")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A83E38")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#608048")) { Opacity = opacity },
-new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5B82B8")) { Opacity = opacity },
-
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A6B9E")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4E8B7A")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B87A4A")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B8AAD")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B6B6B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A9B6B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AD7A4A")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7A9B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B7A6B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B9B7A")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8C6B9B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B8C6B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B8C9B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B6B8C")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A9B8C")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8C7A6B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B9B8C")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B8C7A")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A8C9B")) { Opacity = opacity },
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8C9B7A")) { Opacity = opacity }
-            };
+            return PaletteColors.Select(color => (Brush)new SolidColorBrush(color) { Opacity = opacity }).ToList();
         }
+
+        /// <summary>
+        /// colours the palette hands out to nodes in order, also for callers that colour nodes through NodeBrushes
+        /// </summary>
+        public static readonly IReadOnlyList<Color> PaletteColors = new List<Color>()
+        {
+            (Color)ColorConverter.ConvertFromString("#4A6F9E"),
+            (Color)ColorConverter.ConvertFromString("#8E3F66"),
+            (Color)ColorConverter.ConvertFromString("#556055"),
+            (Color)ColorConverter.ConvertFromString("#B0553A"),
+            (Color)ColorConverter.ConvertFromString("#3D8880"),
+            (Color)ColorConverter.ConvertFromString("#B03F42"),
+            (Color)ColorConverter.ConvertFromString("#326E52"),
+            (Color)ColorConverter.ConvertFromString("#B87040"),
+            (Color)ColorConverter.ConvertFromString("#7A7A38"),
+            (Color)ColorConverter.ConvertFromString("#C06030"),
+            (Color)ColorConverter.ConvertFromString("#4A709E"),
+            (Color)ColorConverter.ConvertFromString("#8E4065"),
+            (Color)ColorConverter.ConvertFromString("#556253"),
+            (Color)ColorConverter.ConvertFromString("#3E8882"),
+            (Color)ColorConverter.ConvertFromString("#AF4045"),
+            (Color)ColorConverter.ConvertFromString("#607A96"),
+            (Color)ColorConverter.ConvertFromString("#3A756C"),
+            (Color)ColorConverter.ConvertFromString("#7A9150"),
+            (Color)ColorConverter.ConvertFromString("#8A4547"),
+            (Color)ColorConverter.ConvertFromString("#326E96"),
+            (Color)ColorConverter.ConvertFromString("#A08A30"),
+            (Color)ColorConverter.ConvertFromString("#384F7C"),
+            (Color)ColorConverter.ConvertFromString("#A83E38"),
+            (Color)ColorConverter.ConvertFromString("#608048"),
+            (Color)ColorConverter.ConvertFromString("#5B82B8"),
+            (Color)ColorConverter.ConvertFromString("#7A6B9E"),
+            (Color)ColorConverter.ConvertFromString("#4E8B7A"),
+            (Color)ColorConverter.ConvertFromString("#B87A4A"),
+            (Color)ColorConverter.ConvertFromString("#6B8AAD"),
+            (Color)ColorConverter.ConvertFromString("#9B6B6B"),
+            (Color)ColorConverter.ConvertFromString("#7A9B6B"),
+            (Color)ColorConverter.ConvertFromString("#AD7A4A"),
+            (Color)ColorConverter.ConvertFromString("#6B7A9B"),
+            (Color)ColorConverter.ConvertFromString("#9B7A6B"),
+            (Color)ColorConverter.ConvertFromString("#6B9B7A"),
+            (Color)ColorConverter.ConvertFromString("#8C6B9B"),
+            (Color)ColorConverter.ConvertFromString("#9B8C6B"),
+            (Color)ColorConverter.ConvertFromString("#6B8C9B"),
+            (Color)ColorConverter.ConvertFromString("#9B6B8C"),
+            (Color)ColorConverter.ConvertFromString("#7A9B8C"),
+            (Color)ColorConverter.ConvertFromString("#8C7A6B"),
+            (Color)ColorConverter.ConvertFromString("#6B9B8C"),
+            (Color)ColorConverter.ConvertFromString("#9B8C7A"),
+            (Color)ColorConverter.ConvertFromString("#7A8C9B"),
+            (Color)ColorConverter.ConvertFromString("#8C9B7A")
+        };
 
         #endregion
 
