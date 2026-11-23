@@ -118,7 +118,8 @@ namespace kor.Wpf.Controls.Chart
 
 		private SankeyNode CreateNode(SankeyData data, string name)
         {
-            var label = new TextBlock() { Text = name };
+            var displayName = diagram.NodeLabels != null && diagram.NodeLabels.TryGetValue(name, out var nodeLabel) && !string.IsNullOrEmpty(nodeLabel) ? nodeLabel : name;
+            var label = new TextBlock() { Text = displayName };
             var shape = new Rectangle();
             label.Tag = shape.Tag = name;
 
@@ -139,6 +140,7 @@ namespace kor.Wpf.Controls.Chart
 
             var node = new SankeyNode(shape, label);
             node.Name = name;
+            node.DisplayName = displayName;
             styleManager.SetNodeBrush(node);
 
             return node;
@@ -247,8 +249,8 @@ namespace kor.Wpf.Controls.Chart
             }
             else
             {
-                measuredFirstLevelLabelWidth = currentNodes[0].Max(n => MeasureHepler.MeasureString(n.Name, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
-                measuredLastLevelLabelWidth = currentNodes.Last().Value.Max(n => MeasureHepler.MeasureString(n.Name, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
+                measuredFirstLevelLabelWidth = currentNodes[0].Max(n => MeasureHepler.MeasureString(n.DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
+                measuredLastLevelLabelWidth = currentNodes.Last().Value.Max(n => MeasureHepler.MeasureString(n.DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
             }
 
             foreach (var levelNodes in currentNodes.Values)
@@ -540,7 +542,7 @@ namespace kor.Wpf.Controls.Chart
                 {
                     if (!(measuredLabelHeight > 0))
                     {
-                        measuredLabelHeight = MeasureHepler.MeasureString(nodes[0].Name, diagram.LabelStyle, CultureInfo.CurrentCulture).Height;
+                        measuredLabelHeight = MeasureHepler.MeasureString(nodes[0].DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture).Height;
                     }
 
                     if(!CheckInsufficientArea(measuredLabelHeight * 2, DiagramCanvas.ActualHeight))
@@ -554,12 +556,12 @@ namespace kor.Wpf.Controls.Chart
                 {
                     if (!(measuredFirstLevelLabelWidth > 0))
                     {
-                        measuredFirstLevelLabelWidth = nodes.FindAll(n => n.X == 0).Max(n => MeasureHepler.MeasureString(n.Name, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
+                        measuredFirstLevelLabelWidth = nodes.FindAll(n => n.X == 0).Max(n => MeasureHepler.MeasureString(n.DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
                     }
 
                     if(!(measuredLastLevelLabelWidth > 0))
                     {
-                        measuredLastLevelLabelWidth = nodes.FindAll(n => n.X == levelIndex - 1).Max(n => MeasureHepler.MeasureString(n.Name, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
+                        measuredLastLevelLabelWidth = nodes.FindAll(n => n.X == levelIndex - 1).Max(n => MeasureHepler.MeasureString(n.DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture).Width);
                     }
 
                     if (!CheckInsufficientArea(measuredLastLevelLabelWidth + measuredFirstLevelLabelWidth, DiagramCanvas.ActualWidth))
@@ -647,7 +649,7 @@ namespace kor.Wpf.Controls.Chart
 
         private void MeatureNodeLabel(SankeyNode node)
         {
-            var size = MeasureHepler.MeasureString(node.Name, diagram.LabelStyle, CultureInfo.CurrentCulture);
+            var size = MeasureHepler.MeasureString(node.DisplayName, diagram.LabelStyle, CultureInfo.CurrentCulture);
             node.LabelHeight = size.Height;
             node.LabelWidth = size.Width;
         }
@@ -775,10 +777,14 @@ namespace kor.Wpf.Controls.Chart
 
         private void NodeMouseLeftButtonUp(object sender, MouseEventArgs e)
         {
+            var name = ((FrameworkElement)e.OriginalSource).Tag as string;
+
             if (diagram.HighlightMode == HighlightMode.MouseLeftButtonUp)
             {
-                diagram.SetCurrentValue(SankeyDiagram.HighlightNodeProperty, ((FrameworkElement)e.OriginalSource).Tag as string);
+                diagram.SetCurrentValue(SankeyDiagram.HighlightNodeProperty, name);
             }
+
+            diagram.RaiseEvent(new SankeyNodeClickEventArgs(SankeyDiagram.NodeClickEvent, diagram, name));
         }
 
         #endregion

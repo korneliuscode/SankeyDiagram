@@ -113,6 +113,13 @@ namespace kor.Wpf.Controls.Chart
             diagram.assist.UpdateDiagram(diagram.Datas);
         }
 
+        private static void OnNodeLabelsSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        {
+            // rebuilding measures the labels anew whether they arrive before or after the datas
+            var diagram = (SankeyDiagram)o;
+            diagram.assist.UpdateDiagram(diagram.Datas);
+        }
+
         private static void OnSankeyFlowDirectionSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             ReLoadDiagram((SankeyDiagram)o);
@@ -259,6 +266,18 @@ namespace kor.Wpf.Controls.Chart
 
         public static readonly DependencyProperty NodeBrushesProperty = DependencyProperty.Register("NodeBrushes", typeof(Dictionary<string, Brush>), typeof(SankeyDiagram), new PropertyMetadata(OnNodeBrushesSourceChanged));
 
+        /// <summary>
+        /// the text a node shows by its name, for the label and the tooltip,
+        /// a node without an entry shows its name
+        /// </summary>
+        public Dictionary<string, string> NodeLabels
+        {
+            get { return (Dictionary<string, string>)GetValue(NodeLabelsProperty); }
+            set { SetValue(NodeLabelsProperty, value); }
+        }
+
+        public static readonly DependencyProperty NodeLabelsProperty = DependencyProperty.Register("NodeLabels", typeof(Dictionary<string, string>), typeof(SankeyDiagram), new PropertyMetadata(OnNodeLabelsSourceChanged));
+
         public Style LabelStyle
         {
             get { return (Style)GetValue(LabelStyleProperty); }
@@ -332,6 +351,22 @@ namespace kor.Wpf.Controls.Chart
         }
 
         public static readonly DependencyProperty MaxNodeCountInOneLevelProperty = DependencyProperty.Register("MaxNodeCountInOneLevel", typeof(int), typeof(SankeyDiagram));
+
+        #endregion
+
+        #region routed events
+
+        /// <summary>
+        /// raised when the left mouse button is released over a node or its label,
+        /// whatever the HighlightMode
+        /// </summary>
+        public event SankeyNodeClickEventHandler NodeClick
+        {
+            add { AddHandler(NodeClickEvent, value); }
+            remove { RemoveHandler(NodeClickEvent, value); }
+        }
+
+        public static readonly RoutedEvent NodeClickEvent = EventManager.RegisterRoutedEvent("NodeClick", RoutingStrategy.Bubble, typeof(SankeyNodeClickEventHandler), typeof(SankeyDiagram));
 
         #endregion
 
