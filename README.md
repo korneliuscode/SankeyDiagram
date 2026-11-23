@@ -19,6 +19,8 @@ A powerful  and easy to use WPF library for drawing Sankey diagram.
             ShowLabels="{Binding SankeyShowLabels}"
             HighlightMode="{Binding SankeyHighlightMode}"
             NodeBrushes="{Binding SankeyNodeBrushes}"
+            NodeLabels="{Binding SankeyNodeLabels}"
+            NodeClick="SankeyNodeClick"
             HighlightNode="{Binding HighlightSankeyNode}"
             HighlightLink="{Binding HighlightSankeyLink}" />
 ```
@@ -46,6 +48,13 @@ var datas = new List<SankeyDataRow>()
     new SankeyDataRow("C", "F", 455),
 };
 ```
+
+* labels and clicks
+
+`NodeLabels` maps the name of a node to the text its label shows, so two nodes can read alike while their
+names keep them apart; a node without an entry shows its name. A tooltip template reaches that text as
+`FromNode.DisplayName` and `ToNode.DisplayName`. `NodeClick` is raised when a
+node or its label is clicked, whatever the `HighlightMode`, and names the node in `SankeyNodeClickEventArgs.Name`.
 
 * the beauty of data visualization  
   <br />

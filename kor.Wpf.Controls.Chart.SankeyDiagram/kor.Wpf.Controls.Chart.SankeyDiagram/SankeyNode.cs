@@ -34,6 +34,12 @@ namespace kor.Wpf.Controls.Chart
 
         public string Name { get; set; }
 
+        /// <summary>
+        /// the text the label and the tooltip show,
+        /// the entry of NodeLabels for the name or the name itself
+        /// </summary>
+        public string DisplayName { get; set; }
+
         public double Y { get; set; }
 
         public double X { get; set; }
